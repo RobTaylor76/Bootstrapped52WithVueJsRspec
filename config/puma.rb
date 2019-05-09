@@ -14,8 +14,8 @@ threads threads_count, threads_count
 environment ENV.fetch("RAILS_ENV") { "development" }
 
 if ENV.fetch("PUMA_BIND_SOCKET") { nil }  # /tmp/nginx_puma.socket
-  puts " #{ENV.fetch("PUMA_BIND_SOCKET")} --- socket name......"
   bind(ENV.fetch("PUMA_BIND_SOCKET"))
+  FileUtils.touch('/tmp/app-initialized')   # used by nginx build pack to know it's ok...
 else
   # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
   port        ENV.fetch("PORT") { 3000 }
