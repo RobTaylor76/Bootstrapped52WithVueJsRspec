@@ -1,2 +1,2 @@
-web: bin/start-nginx bundle exec rails s
+web: bin/start-nginx-solo
 
