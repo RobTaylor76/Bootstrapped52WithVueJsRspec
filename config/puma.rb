@@ -16,13 +16,13 @@ rackup      DefaultRackup
 #
 environment ENV.fetch("RAILS_ENV") { "development" }
 
-# if ENV.fetch("RAILS_ENV") == 'production'
-#   bind('unix:///tmp/nginx_puma.socket')
+if ENV.fetch("RAILS_ENV") == 'production'
+   bind('unix:///tmp/nginx_puma.socket')
 #   FileUtils.touch('/tmp/app-initialized')   # used by nginx build pack to know it's ok...
-# else
+else
   # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
   port        ENV.fetch("PORT") { 3000 }
-# end
+end
 
 # Specifies the number of `workers` to boot in clustered mode.
 # Workers are forked webserver processes. If using threads and workers together
@@ -43,8 +43,9 @@ environment ENV.fetch("RAILS_ENV") { "development" }
 plugin :tmp_restart
 
 
-# on_worker_boot do
+ on_worker_boot do
+   FileUtils.touch('/tmp/app-initialized')   # used by nginx build pack to know it's ok...
 #   # Worker specific setup for Rails 4.1+
 #   # See: https://devcenter.heroku.com/articles/deploying-rails-applications-with-the-puma-web-server#on-worker-boot
 #   ActiveRecord::Base.establish_connection
-# end
+ end
