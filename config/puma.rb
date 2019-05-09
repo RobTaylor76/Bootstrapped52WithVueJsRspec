@@ -6,24 +6,23 @@
 #
 threads_count = ENV.fetch("RAILS_MAX_THREADS") { 5 }
 threads threads_count, threads_count
+workers Integer(ENV['WEB_CONCURRENCY'] || 2)
 
+preload_app!
 
+rackup      DefaultRackup
 
 # Specifies the `environment` that Puma will run in.
 #
 environment ENV.fetch("RAILS_ENV") { "development" }
 
-puma_bind_socket=ENV.fetch("PUMA_BIND_SOCKET") { nil }
-puts "PUMA INIT - PUMA_BIND_SOCKET= #{puma_bind_socket}}"
-
-
-if ENV.fetch("RAILS_ENV") == 'production'
-  bind('unix:///tmp/nginx_puma.socket')
-  FileUtils.touch('/tmp/app-initialized')   # used by nginx build pack to know it's ok...
-else
+# if ENV.fetch("RAILS_ENV") == 'production'
+#   bind('unix:///tmp/nginx_puma.socket')
+#   FileUtils.touch('/tmp/app-initialized')   # used by nginx build pack to know it's ok...
+# else
   # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
   port        ENV.fetch("PORT") { 3000 }
-end
+# end
 
 # Specifies the number of `workers` to boot in clustered mode.
 # Workers are forked webserver processes. If using threads and workers together
@@ -42,3 +41,10 @@ end
 
 # Allow puma to be restarted by `rails restart` command.
 plugin :tmp_restart
+
+
+# on_worker_boot do
+#   # Worker specific setup for Rails 4.1+
+#   # See: https://devcenter.heroku.com/articles/deploying-rails-applications-with-the-puma-web-server#on-worker-boot
+#   ActiveRecord::Base.establish_connection
+# end
